@@ -3,7 +3,7 @@ name: Deploy Fullstack ChatApp
 on:
   push:
     branches:
-      - master
+      - master 
 
 jobs:
   # 1. 백엔드 (Lambda 코드 패키징 & Terraform으로 배포)

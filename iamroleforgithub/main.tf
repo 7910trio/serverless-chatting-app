@@ -51,7 +51,8 @@ resource "aws_iam_policy" "github_actions_policy" {
           "lambda:UpdateFunctionConfiguration",
           "lambda:Get*",
           "lambda:AddPermission",
-          "lambda:List*"
+          "lambda:List*",
+          "Lambda:Delete*"
         ],
         Resource = "*"
       },
@@ -72,8 +73,8 @@ resource "aws_iam_policy" "github_actions_policy" {
           "s3:PutObjectAcl",
           "s3:Get*",
           "s3:List*",
-          "s3:DeleteObject",
           "s3:CreateBucket",
+          "s3:Delete*"
         ],
         Resource = "*"
       },
@@ -84,7 +85,8 @@ resource "aws_iam_policy" "github_actions_policy" {
           "cloudfront:CreateInvalidation",
           "cloudfront:CreateOriginAccessControl",
           "cloudfront:Get*",
-          "cloudfront:List*"
+          "cloudfront:List*",
+          "cloudfront:Delete*",
         ],
         Resource = "*"
       },
@@ -112,7 +114,8 @@ resource "aws_iam_policy" "github_actions_policy" {
         Action = [
           "dynamodb:CreateTable",
           "dynamodb:List*",
-          "dynamodb:Describe*"
+          "dynamodb:Describe*",
+          "dynamodb:Delete*",
           ]
         Resource = "*"
       },
@@ -124,7 +127,8 @@ resource "aws_iam_policy" "github_actions_policy" {
           "iam:AttachRolePolicy",
           "iam:PassRole",
           "iam:Get*",
-          "iam:List*"
+          "iam:List*",
+          "iam:Delete*"
         ]
         Resource = "*"
       }

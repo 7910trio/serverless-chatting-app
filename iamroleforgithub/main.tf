@@ -71,7 +71,8 @@ resource "aws_iam_policy" "github_actions_policy" {
           "s3:PutObjectAcl",
           "s3:GetObject",
           "s3:ListBucket",
-          "s3:DeleteObject"
+          "s3:DeleteObject",
+          "s3:CreateBucket"
         ],
         Resource = "*"
       },
@@ -81,7 +82,8 @@ resource "aws_iam_policy" "github_actions_policy" {
         Action = [
           "cloudfront:CreateInvalidation",
           "cloudfront:GetDistribution",
-          "cloudfront:GetDistributionConfig"
+          "cloudfront:GetDistributionConfig",
+          "cloudfront:CreateOriginAccessControl"
         ],
         Resource = "*"
       },
@@ -103,6 +105,21 @@ resource "aws_iam_policy" "github_actions_policy" {
           "dynamodb:Query"
         ],
         Resource = "arn:aws:dynamodb:ap-northeast-2:${var.aws_account_id}:table/tf-lock-table"
+      },
+      {
+        Effect = "Allow"
+        Action = ["dynamodb:CreateTable"]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:CreateRole",
+          "iam:CreatePolicy",
+          "iam:AttachRolePolicy",
+          "iam:PassRole"
+        ]
+        Resource = "*"
       }
     ]
   })

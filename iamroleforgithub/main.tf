@@ -74,6 +74,7 @@ resource "aws_iam_policy" "github_actions_policy" {
           "s3:DeleteObject",
           "s3:CreateBucket",
           "s3:GetBucketTagging",
+          "s3:GetBucketPolicy"
         ],
         Resource = "*"
       },
@@ -104,7 +105,8 @@ resource "aws_iam_policy" "github_actions_policy" {
           "dynamodb:UpdateItem",
           "dynamodb:DeleteItem",
           "dynamodb:Scan",
-          "dynamodb:Query"
+          "dynamodb:Query",
+          "dynamodb:DescribeContinuousBackups"
         ],
         Resource = "arn:aws:dynamodb:ap-northeast-2:${var.aws_account_id}:table/tf-lock-table"
       },
@@ -124,7 +126,10 @@ resource "aws_iam_policy" "github_actions_policy" {
           "iam:AttachRolePolicy",
           "iam:PassRole",
           "iam:GetRole",
+          "iam:GetRolePolicy",
           "iam:GetPolicy",
+          "iam:ListRolePolicies",
+          "iam:GetPolicyVersion"
         ]
         Resource = "*"
       }

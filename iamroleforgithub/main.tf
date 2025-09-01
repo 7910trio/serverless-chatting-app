@@ -90,6 +90,19 @@ resource "aws_iam_policy" "github_actions_policy" {
         Effect = "Allow",
         Action = ["sts:AssumeRole"],
         Resource = "*"
+      },
+      # DynamoDB
+      {
+        Effect = "Allow",
+        Action = [
+          "dynamodb:PutItem",
+          "dynamodb:GetItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Scan",
+          "dynamodb:Query"
+        ],
+        Resource = "arn:aws:dynamodb:ap-northeast-2:${var.aws_account_id}:table/tf-lock-table"
       }
     ]
   })

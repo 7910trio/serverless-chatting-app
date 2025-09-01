@@ -72,7 +72,8 @@ resource "aws_iam_policy" "github_actions_policy" {
           "s3:GetObject",
           "s3:ListBucket",
           "s3:DeleteObject",
-          "s3:CreateBucket"
+          "s3:CreateBucket",
+          "s3:GetBucketTagging",
         ],
         Resource = "*"
       },
@@ -83,7 +84,8 @@ resource "aws_iam_policy" "github_actions_policy" {
           "cloudfront:CreateInvalidation",
           "cloudfront:GetDistribution",
           "cloudfront:GetDistributionConfig",
-          "cloudfront:CreateOriginAccessControl"
+          "cloudfront:CreateOriginAccessControl",
+          "cloudfront:GetOriginAccessControl",
         ],
         Resource = "*"
       },
@@ -108,7 +110,10 @@ resource "aws_iam_policy" "github_actions_policy" {
       },
       {
         Effect = "Allow"
-        Action = ["dynamodb:CreateTable"]
+        Action = [
+          "dynamodb:CreateTable",
+          "dynamodb:DescribeTable"
+          ]
         Resource = "*"
       },
       {
@@ -117,7 +122,9 @@ resource "aws_iam_policy" "github_actions_policy" {
           "iam:CreateRole",
           "iam:CreatePolicy",
           "iam:AttachRolePolicy",
-          "iam:PassRole"
+          "iam:PassRole",
+          "iam:GetRole",
+          "iam:GetPolicy",
         ]
         Resource = "*"
       }

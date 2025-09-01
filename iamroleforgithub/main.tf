@@ -49,8 +49,9 @@ resource "aws_iam_policy" "github_actions_policy" {
           "lambda:CreateFunction",
           "lambda:UpdateFunctionCode",
           "lambda:UpdateFunctionConfiguration",
-          "lambda:GetFunction",
-          "lambda:AddPermission"
+          "lambda:Get*",
+          "lambda:AddPermission",
+          "lambda:List*"
         ],
         Resource = "*"
       },
@@ -69,13 +70,10 @@ resource "aws_iam_policy" "github_actions_policy" {
         Action = [
           "s3:PutObject",
           "s3:PutObjectAcl",
-          "s3:GetObject",
-          "s3:ListBucket",
+          "s3:Get*",
+          "s3:List*",
           "s3:DeleteObject",
           "s3:CreateBucket",
-          "s3:GetBucketTagging",
-          "s3:GetBucketPolicy",
-          "s3:GetBucketAcl"
         ],
         Resource = "*"
       },
@@ -84,10 +82,9 @@ resource "aws_iam_policy" "github_actions_policy" {
         Effect = "Allow",
         Action = [
           "cloudfront:CreateInvalidation",
-          "cloudfront:GetDistribution",
-          "cloudfront:GetDistributionConfig",
           "cloudfront:CreateOriginAccessControl",
-          "cloudfront:GetOriginAccessControl",
+          "cloudfront:Get*",
+          "cloudfront:List*"
         ],
         Resource = "*"
       },
@@ -114,8 +111,8 @@ resource "aws_iam_policy" "github_actions_policy" {
         Effect = "Allow"
         Action = [
           "dynamodb:CreateTable",
-          "dynamodb:DescribeTable",
-          "dynamodb:DescribeContinuousBackups"
+          "dynamodb:List*",
+          "dynamodb:Describe*"
           ]
         Resource = "*"
       },
@@ -126,12 +123,8 @@ resource "aws_iam_policy" "github_actions_policy" {
           "iam:CreatePolicy",
           "iam:AttachRolePolicy",
           "iam:PassRole",
-          "iam:GetRole",
-          "iam:GetRolePolicy",
-          "iam:GetPolicy",
-          "iam:ListRolePolicies",
-          "iam:GetPolicyVersion",
-          "iam:ListAttachedRolePolicies"
+          "iam:Get*",
+          "iam:List*"
         ]
         Resource = "*"
       }

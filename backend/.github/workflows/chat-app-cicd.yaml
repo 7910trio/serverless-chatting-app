@@ -1,0 +1,111 @@
+name: Deploy Fullstack ChatApp
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  # 1. 백엔드 (Lambda 코드 패키징 & Terraform으로 배포)
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra # 기본 작업 위치는 infra 폴더
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-northeast-2
+          role-to-assume: ${{ secrets.AWS_GITHUB_ROLE_ARN }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # --- Lambda 코드 빌드 & zip ---
+      - name: Package REST Lambda
+        run: |
+          cd ../backend/rest
+          mkdir -p ../../infra/dist
+          zip -r ../../infra/dist/rest.zip .
+      
+      - name: Package WebSocket Lambda
+        run: |
+          cd ../backend/websocket
+          mkdir -p ../../infra/dist
+          zip -r ../../infra/dist/websocket.zip .
+
+      # --- Terraform 배포 ---
+      - name: Terraform Init & Apply
+        run: |
+          terraform init
+          terraform apply -auto-approve
+
+      # --- Terraform Output 저장 ---
+      - name: Get Terraform Outputs
+        run: |
+          echo "WS_URL=$(terraform output -raw ws_url)" >> $GITHUB_ENV
+
+      - name: Save Outputs as Artifact # $GITHUB_ENV에 저장된 환경 변수를 꺼내서 텍스트 파일로 기록
+        run: | 
+          echo "$WS_URL" > ws_url.txt
+        shell: bash
+      - uses: actions/upload-artifact@v4
+        with:
+          name: api-urls # api-urls라는 이름의 아티팩트에 묶어서 업로드 -> 다른 job에서도 다운로드해서 사용할 수 있음
+          path: |
+            infra/ws_url.txt
+
+  # 2. 프론트엔드 (React 빌드 & S3 + CloudFront 배포)
+  frontend:
+    runs-on: ubuntu-latest
+    needs: backend
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-northeast-2
+          role-to-assume: arn:aws:iam::123456789012:role/GitHubActionsRole
+
+      # --- Terraform Outputs 다운로드 ---
+      - name: Download API URLs Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: api-urls
+          path: .
+
+      # --- Node.js 세팅 (React 빌드용) ---
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # --- .env 파일 생성 ---
+      - name: Create .env File
+        run: |
+          echo "REACT_APP_REST_BASE_URL=$(cat rest_url.txt)" >> .env
+          echo "REACT_APP_WS_URL=$(cat ws_url.txt)" >> .env
+
+      # --- React 빌드 ---
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build React App
+        run: npm run build
+
+      # --- S3 업로드 & CloudFront 캐시 무효화 ---
+      - name: Upload to S3
+        run: aws s3 sync build/ s3://$(cat bucket.txt) --delete
+
+      - name: Invalidate CloudFront Cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id $(cat cloudfront.txt) \
+            --paths "/*"

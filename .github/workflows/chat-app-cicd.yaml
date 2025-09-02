@@ -77,7 +77,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ap-northeast-2
-          role-to-assume: arn:aws:iam::123456789012:role/GitHubActionsRole
+          role-to-assume: ${{ secrets.AWS_GITHUB_ROLE_ARN }}
 
       # --- Terraform Outputs 다운로드 ---
       - name: Download API URLs Artifact

@@ -52,16 +52,22 @@ jobs:
       - name: Get Terraform Outputs
         run: |
           echo "WS_URL=$(terraform output -raw ws_url)" >> $GITHUB_ENV
+          echo "BUCKET_NAME=$(terraform output -raw bucket_name)" >> $GITHUB_ENV
+          echo "CLOUDFRONT_ID=$(terraform output -raw cloudfront_id)" >> $GITHUB_ENV
 
       - name: Save Outputs as Artifact # $GITHUB_ENV에 저장된 환경 변수를 꺼내서 텍스트 파일로 기록
         run: | 
           echo "$WS_URL" > ws_url.txt
+          echo "$BUCKET_NAME" > bucket.txt
+          echo "$CLOUDFRONT_ID" > cloudfront.txt
         shell: bash
       - uses: actions/upload-artifact@v4
         with:
           name: api-urls # api-urls라는 이름의 아티팩트에 묶어서 업로드 -> 다른 job에서도 다운로드해서 사용할 수 있음
           path: |
             infra/ws_url.txt
+            infra/bucket.txt
+            infra/cloudfront.txt
 
   # 2. 프론트엔드 (React 빌드 & S3 + CloudFront 배포)
   frontend:
@@ -95,7 +101,6 @@ jobs:
       # --- .env 파일 생성 ---
       - name: Create .env File
         run: |
-          echo "REACT_APP_REST_BASE_URL=$(cat rest_url.txt)" >> .env
           echo "REACT_APP_WS_URL=$(cat ws_url.txt)" >> .env
 
       # --- React 빌드 ---

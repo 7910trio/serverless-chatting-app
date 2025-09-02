@@ -7,5 +7,5 @@ output "bucket_name" {
 }
 
 output "cloudfront_id" {
-  value = module.cloudfront.cloudfront_id
+  value = module.cloudfront.distribution_id
 }

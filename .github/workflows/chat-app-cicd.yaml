@@ -94,7 +94,7 @@ jobs:
 
       # Artifact 파일들 잘 다운로드 되었는지 확인
       - name: Debug artifact files
-        run: ls -R "$GITHUB_WORKSPACE
+        run: ls -R $GITHUB_WORKSPACE
 
       # --- Node.js 세팅 (React 빌드용) ---
       - name: Setup Node.js

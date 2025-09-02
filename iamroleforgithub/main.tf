@@ -71,9 +71,10 @@ resource "aws_iam_policy" "github_actions_policy" {
         Action = [
           "s3:PutObject",
           "s3:PutObjectAcl",
+          "s3:PutBucketTagging",
+          "s3:CreateBucket",
           "s3:Get*",
           "s3:List*",
-          "s3:CreateBucket",
           "s3:Delete*"
         ],
         Resource = "*"

@@ -57,17 +57,17 @@ jobs:
 
       - name: Save Outputs as Artifact # $GITHUB_ENV에 저장된 환경 변수를 꺼내서 텍스트 파일로 기록
         run: | 
-          echo "$WS_URL" > ws_url.txt
-          echo "$BUCKET_NAME" > bucket.txt
-          echo "$CLOUDFRONT_ID" > cloudfront.txt
+          echo "$WS_URL" > "$GITHUB_WORKSPACE/ws_url.txt"
+          echo "$BUCKET_NAME" > "$GITHUB_WORKSPACE/bucket.txt"
+          echo "$CLOUDFRONT_ID" > "$GITHUB_WORKSPACE/cloudfront.txt"
         shell: bash
       - uses: actions/upload-artifact@v4
         with:
           name: api-urls # api-urls라는 이름의 아티팩트에 변수 파일들 묶어서 업로드 -> 다른 job에서도 다운로드해서 사용할 수 있음
           path: |
-            infra/ws_url.txt
-            infra/bucket.txt
-            infra/cloudfront.txt
+            ws_url.txt
+            bucket.txt
+            cloudfront.txt
 
   # 2. 프론트엔드 (React 빌드 & S3 + CloudFront 배포)
   frontend:
@@ -112,7 +112,7 @@ jobs:
 
       # --- S3 업로드 & CloudFront 캐시 무효화 ---
       - name: Upload to S3
-        run: aws s3 sync ./build/ s3://$(cat infra/bucket.txt) --delete
+        run: aws s3 sync dist/ s3://$(cat infra/bucket.txt) --delete
 
       - name: Invalidate CloudFront Cache
         run: |

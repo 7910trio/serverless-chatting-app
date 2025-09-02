@@ -69,9 +69,7 @@ resource "aws_iam_policy" "github_actions_policy" {
       {
         Effect = "Allow",
         Action = [
-          "s3:PutObject",
-          "s3:PutObjectAcl",
-          "s3:PutBucketTagging",
+          "s3:Put*",
           "s3:CreateBucket",
           "s3:Get*",
           "s3:List*",
@@ -85,6 +83,8 @@ resource "aws_iam_policy" "github_actions_policy" {
         Action = [
           "cloudfront:CreateInvalidation",
           "cloudfront:CreateOriginAccessControl",
+          "cloudfront:CreateDistribution",
+          "cloudfront:UpdateDistribution",
           "cloudfront:Get*",
           "cloudfront:List*",
           "cloudfront:Delete*",

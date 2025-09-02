@@ -65,9 +65,9 @@ jobs:
         with:
           name: api-urls # api-urls라는 이름의 아티팩트에 변수 파일들 묶어서 업로드 -> 다른 job에서도 다운로드해서 사용할 수 있음
           path: |
-            ws_url.txt
-            bucket.txt
-            cloudfront.txt
+            infra/ws_url.txt
+            infra/bucket.txt
+            infra/cloudfront.txt
 
   # 2. 프론트엔드 (React 빌드 & S3 + CloudFront 배포)
   frontend:
@@ -101,7 +101,7 @@ jobs:
       # --- .env 파일 생성 ---
       - name: Create .env File
         run: |
-          echo "REACT_APP_WS_URL=$(cat ws_url.txt)" >> .env
+          echo "REACT_APP_WS_URL=$(cat infra/ws_url.txt)" >> .env
 
       # --- React 빌드 ---
       - name: Install dependencies
@@ -112,10 +112,10 @@ jobs:
 
       # --- S3 업로드 & CloudFront 캐시 무효화 ---
       - name: Upload to S3
-        run: aws s3 sync build/ s3://$(cat bucket.txt) --delete
+        run: aws s3 sync ./build/ s3://$(cat infra/bucket.txt) --delete
 
       - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id $(cat cloudfront.txt) \
+            --distribution-id $(cat infra/cloudfront.txt) \
             --paths "/*"

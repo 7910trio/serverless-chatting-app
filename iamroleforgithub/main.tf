@@ -88,6 +88,8 @@ resource "aws_iam_policy" "github_actions_policy" {
           "cloudfront:Get*",
           "cloudfront:List*",
           "cloudfront:Delete*",
+          "cloudfront:TagResource",
+          "cloudfront:UntagResource"
         ],
         Resource = "*"
       },

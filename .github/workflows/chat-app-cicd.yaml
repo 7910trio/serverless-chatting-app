@@ -92,6 +92,10 @@ jobs:
           name: api-urls
           path: .
 
+      # Artifact 파일들 잘 다운로드 되었는지 확인
+      - name: Debug artifact files
+        run: ls -R .
+
       # --- Node.js 세팅 (React 빌드용) ---
       - name: Setup Node.js
         uses: actions/setup-node@v4

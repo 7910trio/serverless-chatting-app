@@ -94,7 +94,7 @@ jobs:
 
       # Artifact 파일들 잘 다운로드 되었는지 확인
       - name: Debug artifact files
-        run: ls -R .
+        run: ls -R "$GITHUB_WORKSPACE
 
       # --- Node.js 세팅 (React 빌드용) ---
       - name: Setup Node.js
@@ -105,7 +105,7 @@ jobs:
       # --- .env 파일 생성 ---
       - name: Create .env File
         run: |
-          echo "REACT_APP_WS_URL=$(cat ws_url.txt)" >> .env
+          echo "REACT_APP_WS_URL=$(cat $GITHUB_WORKSPACE/ws_url.txt)" >> .env
 
       # --- React 빌드 ---
       - name: Install dependencies
@@ -116,10 +116,10 @@ jobs:
 
       # --- S3 업로드 & CloudFront 캐시 무효화 ---
       - name: Upload to S3
-        run: aws s3 sync dist/ s3://$(cat bucket.txt) --delete
+        run: aws s3 sync dist/ s3://$(cat $GITHUB_WORKSPACE/bucket.txt) --delete
 
       - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id $(cat cloudfront.txt) \
+            --distribution-id $(cat $GITHUB_WORKSPACE/cloudfront.txt) \
             --paths "/*"

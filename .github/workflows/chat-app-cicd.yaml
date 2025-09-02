@@ -101,7 +101,7 @@ jobs:
       # --- .env 파일 생성 ---
       - name: Create .env File
         run: |
-          echo "REACT_APP_WS_URL=$(cat infra/ws_url.txt)" >> .env
+          echo "REACT_APP_WS_URL=$(cat ws_url.txt)" >> .env
 
       # --- React 빌드 ---
       - name: Install dependencies
@@ -112,10 +112,10 @@ jobs:
 
       # --- S3 업로드 & CloudFront 캐시 무효화 ---
       - name: Upload to S3
-        run: aws s3 sync dist/ s3://$(cat infra/bucket.txt) --delete
+        run: aws s3 sync dist/ s3://$(cat bucket.txt) --delete
 
       - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id $(cat infra/cloudfront.txt) \
+            --distribution-id $(cat cloudfront.txt) \
             --paths "/*"

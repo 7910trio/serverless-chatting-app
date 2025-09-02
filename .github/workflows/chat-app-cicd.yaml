@@ -63,11 +63,11 @@ jobs:
         shell: bash
       - uses: actions/upload-artifact@v4
         with:
-          name: api-urls # api-urls라는 이름의 아티팩트에 묶어서 업로드 -> 다른 job에서도 다운로드해서 사용할 수 있음
+          name: api-urls # api-urls라는 이름의 아티팩트에 변수 파일들 묶어서 업로드 -> 다른 job에서도 다운로드해서 사용할 수 있음
           path: |
-            infra/ws_url.txt
-            infra/bucket.txt
-            infra/cloudfront.txt
+            ws_url.txt
+            bucket.txt
+            cloudfront.txt
 
   # 2. 프론트엔드 (React 빌드 & S3 + CloudFront 배포)
   frontend:

@@ -111,13 +111,23 @@ export default function App() {
   // WebSocket 연결 및 재연결 로직
   useEffect(() => {
     let ws;
+    let cancelled = false; // cleanup 이후 작업 차단용
+
+    // 방 변경 시 기존 메시지 초기화 후 새로 불러오기
+    setMessages([]);
 
     const open = async () => {
+      // 안전 체크: 이미 열려 있다면 새로 열지 않음
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) return;
+
       setConnecting(true);
       const token = await CONFIG.getAuthToken();
       const url = token ? `${wsUrl}?auth=${encodeURIComponent(token)}` : wsUrl;
 
-      ws = new WebSocket(url);
+      if (cancelled) return; // cleanup 이후라면 중단
+
+      try {
+              ws = new WebSocket(url);
       wsRef.current = ws;
 
       ws.onopen = () => {
@@ -148,9 +158,14 @@ export default function App() {
         setConnected(false);
         ws.close();
       };
-    };
+    } catch (err) {
+      console.error("Failed to open websocket:", err);
+      if (!cancelled) scheduleReconnect();
+    }
+  };
 
     const scheduleReconnect = () => {
+      if (cancelled) return;
       if (reconnectRef.current.timer) return;
       const attempt = ++reconnectRef.current.attempts;
       const delay = Math.min(30000, 1000 * Math.pow(2, attempt)); // exp backoff up to 30s
@@ -163,8 +178,19 @@ export default function App() {
     open();
 
     return () => {
-      clearTimeout(reconnectRef.current.timer);
-      reconnectRef.current.timer = null;
+      cancelled = true;
+      if (reconnectRef.current.timer) {
+        clearTimeout(reconnectRef.current.timer);
+        reconnectRef.current.timer = null;
+      }
+      try {
+        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          // 시도: 서버에 leave 알림 (있으면 처리)
+          wsRef.current.send(JSON.stringify({ action: "leave", roomId }));
+        }
+      } catch (e) {
+        // 무시: 이미 닫혔거나 전송 불가
+      }
       wsRef.current?.close();
     };
   }, [roomId, nickname, wsUrl]);

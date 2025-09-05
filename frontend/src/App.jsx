@@ -19,9 +19,9 @@ import { Send, PlugZap, Plug, Loader2, Hash, User, WifiOff } from "lucide-react"
 // ------------------ CONFIG ------------------
 const CONFIG = {
   // REST API base URL (API Gateway REST stage URL)
-  REST_BASE_URL: "https://your-rest-api-id.execute-api.ap-northeast-2.amazonaws.com/prod",
+  REST_BASE_URL: import.meta.env.VITE_REST_URL,
   // WebSocket URL (API Gateway WebSocket URL)
-  WS_URL: "wss://your-ws-api-id.execute-api.ap-northeast-2.amazonaws.com/prod",
+  WS_URL: import.meta.env.VITE_WS_URL,
   // Default room
   DEFAULT_ROOM_ID: "general",
   // History page size
@@ -62,7 +62,14 @@ function classNames(...xs) {
 }
 
 export default function App() {
-  const [roomId, setRoomId] = useLocalStorage("roomId", CONFIG.DEFAULT_ROOM_ID);
+  const query = new URLSearchParams(window.location.search);
+  const urlRoomId = query.get("roomId");
+
+  const [roomId, setRoomId] = useLocalStorage(
+    "roomId", 
+    urlRoomId || CONFIG.DEFAULT_ROOM_ID
+  );
+  
   const [nickname, setNickname] = useLocalStorage("nickname", "guest" + Math.floor(Math.random() * 1000));
   const [messages, setMessages] = useState([]); // 채팅 메시지 목록
   const [connecting, setConnecting] = useState(false); // WebSocket 연결 상태

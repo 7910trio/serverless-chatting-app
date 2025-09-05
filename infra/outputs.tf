@@ -2,6 +2,10 @@ output "ws_url" {
   value = module.api_gateway.websocket_api_url
 }
 
+output "rest_url" {
+  value = module.api_gateway.rest_api_url
+}
+
 output "bucket_name" {
   value = module.s3_website.bucket_name
 }

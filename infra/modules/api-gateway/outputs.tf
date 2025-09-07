@@ -1,4 +1,4 @@
-output "rest_api_url" {
+output "rest_api_url" { 
   value = aws_apigatewayv2_api.rest_api.api_endpoint
 }
 

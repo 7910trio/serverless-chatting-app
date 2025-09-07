@@ -108,10 +108,17 @@ jobs:
       # --- .env 파일 생성 ---
       - name: Create .env File
         run: |
-          echo "VITE_REST_URL=$(cat $GITHUB_WORKSPACE/rest_base_url.txt)" >> .env
-          echo "VITE_WS_URL=\"$(cat $GITHUB_WORKSPACE/ws_url.txt)\"" >> .env
-          echo "VITE_DEFAULT_ROOM_ID=general" >> .env
-          echo "VITE_HISTORY_LIMIT=50" >> .env
+          REST_URL="$(cat ./rest_url.txt)"
+          WS_URL="$(cat ./ws_url.txt)"
+
+          # printf %s 로 값 그대로 쓰기 (셸이 $default를 확장하지 못하게 함)
+          printf 'VITE_REST_URL=%s\n' "$REST_URL" > .env
+          printf 'VITE_WS_URL=%s\n' "$WS_URL" >> .env
+          printf 'VITE_DEFAULT_ROOM_ID=general\n' >> .env
+          printf 'VITE_HISTORY_LIMIT=50\n' >> .env
+
+          echo "---- .env preview ----"
+          cat .env
       # --- React 빌드 ---
       - name: Install dependencies
         run: npm ci

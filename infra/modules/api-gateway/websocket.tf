@@ -36,3 +36,9 @@ resource "aws_lambda_permission" "ws_api" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.websocket_api.execution_arn}/*/*"
 }
+
+resource "aws_apigatewayv2_stage" "ws_default_stage" {
+  api_id      = aws_apigatewayv2_api.websocket_api.id
+  name        = "$default"
+  auto_deploy = true
+}

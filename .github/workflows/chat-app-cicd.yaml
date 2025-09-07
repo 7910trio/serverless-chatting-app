@@ -108,8 +108,8 @@ jobs:
       # --- .env 파일 생성 ---
       - name: Create .env File
         run: |
-          REST_URL="$(cat ./rest_url.txt)"
-          WS_URL="$(cat ./ws_url.txt)"
+          REST_URL="$(cat $GITHUB_WORKSPACE/rest_url.txt)"
+          WS_URL="$(cat $GITHUB_WORKSPACE/ws_url.txt)"
 
           # printf %s 로 값 그대로 쓰기 (셸이 $default를 확장하지 못하게 함)
           printf 'VITE_REST_URL=%s\n' "$REST_URL" > .env

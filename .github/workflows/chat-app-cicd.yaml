@@ -109,11 +109,12 @@ jobs:
       - name: Create .env File
         run: |
           REST_URL="$(cat $GITHUB_WORKSPACE/rest_url.txt)"
-          WS_URL="$(cat $GITHUB_WORKSPACE/ws_url.txt | sed 's/\$/\$$/g')"
+          WS_URL="$(cat $GITHUB_WORKSPACE/ws_url.txt)"
 
           {
             echo "VITE_REST_URL=$REST_URL"
-            echo "VITE_WS_URL=$WS_URL"
+            # 작은따옴표로 감싸서 $default 그대로 보존
+            echo "VITE_WS_URL='${WS_URL}'"
             echo "VITE_DEFAULT_ROOM_ID=general"
             echo "VITE_HISTORY_LIMIT=50"
           } > .env

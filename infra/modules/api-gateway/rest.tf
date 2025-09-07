@@ -32,4 +32,14 @@ resource "aws_lambda_permission" "rest_api" {
   source_arn    = "${aws_apigatewayv2_api.rest_api.execution_arn}/*/*"
 }
 
+resource "aws_apigatewayv2_stage" "http_default_stage" {
+  api_id      = aws_apigatewayv2_api.rest_api.id
+  name        = "$default"          # 기본 스테이지 이름
+  auto_deploy = true                # true면 코드 변경 시 자동 배포
+  
+  default_route_settings {
+    throttling_rate_limit = 100
+    throttling_burst_limit = 50
+  }
+}
 

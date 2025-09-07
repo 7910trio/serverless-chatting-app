@@ -34,7 +34,7 @@ resource "aws_lambda_permission" "ws_api" {
   action        = "lambda:InvokeFunction"
   function_name = var.ws_lambda_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.websocket_api.execution_arn}/*/*"
+  source_arn    = "${aws_apigatewayv2_api.websocket_api.execution_arn}/${aws_apigatewayv2_stage.ws_default_stage.name}/*"
 }
 
 resource "aws_apigatewayv2_stage" "ws_default_stage" {

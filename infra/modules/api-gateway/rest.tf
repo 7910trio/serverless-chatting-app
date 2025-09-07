@@ -29,7 +29,7 @@ resource "aws_lambda_permission" "rest_api" {
   action        = "lambda:InvokeFunction"
   function_name = var.rest_lambda_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.rest_api.execution_arn}/*/*"
+  source_arn    = "${aws_apigatewayv2_api.rest_api.execution_arn}/${aws_apigatwayv2_stage.http_default_stage.name}/*"
 }
 
 resource "aws_apigatewayv2_stage" "http_default_stage" {

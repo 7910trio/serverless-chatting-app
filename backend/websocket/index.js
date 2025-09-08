@@ -1,4 +1,4 @@
-import AWS from "aws-sdk";
+const AWS = require("aws-sdk");
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
 // 채팅 메시지 저장 테이블

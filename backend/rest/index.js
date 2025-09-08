@@ -1,4 +1,4 @@
-import AWS from "aws-sdk";
+const AWS = require("aws-sdk");
 
 // DynamoDB를 문서지향 형태로 다루는 클라이언트
 const dynamo = new AWS.DynamoDB.DocumentClient();

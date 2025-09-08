@@ -155,7 +155,7 @@ export default function App() {
               newMessages = [data.message];
             } else {
               console.warn("⚠️ 알 수 없는 데이터 형식:", data);
-              new Messages = [];
+              newMessages = [];
             }
 
             // 여기서 무조건 배열로 강제

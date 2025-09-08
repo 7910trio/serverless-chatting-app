@@ -33,12 +33,14 @@ jobs:
       - name: Package REST Lambda
         run: |
           cd ../backend/rest
+          npm install aws-sdk
           mkdir -p ../../infra/dist
           zip -r ../../infra/dist/rest.zip .
       
       - name: Package WebSocket Lambda
         run: |
           cd ../backend/websocket
+          npm install aws-sdk
           mkdir -p ../../infra/dist
           zip -r ../../infra/dist/websocket.zip .
 

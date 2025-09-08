@@ -4,7 +4,7 @@ const AWS = require("aws-sdk");
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const TABLE_MESSAGES = process.env.TABLE_MESSAGES;
 
-export async function handler(event) {
+module.exports.handler = async function(event) {
   try {
     const roomId = event.pathParameters?.roomId;
     const limit = parseInt(event.queryStringParameters?.limit || "50", 10);

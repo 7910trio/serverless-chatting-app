@@ -10,7 +10,7 @@ const apigw = new AWS.ApiGatewayManagementApi({
   endpoint: process.env.WS_ENDPOINT, // "your-ws-api-id.execute-api.ap-northeast-2.amazonaws.com/prod"
 });
 
-export async function handler(event) {
+module.exports.handler = async function(event) {
   const { requestContext, body } = event;
   const connectionId = requestContext.connectionId; // 웹소켓 열결 고유 ID
   const routeKey = requestContext.routeKey; // 웹소켓 이벤트 타입 : $connect, $disconnect, default

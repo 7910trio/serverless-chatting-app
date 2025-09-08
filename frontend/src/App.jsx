@@ -21,7 +21,7 @@ const CONFIG = {
   // REST API base URL (API Gateway REST stage URL)
   REST_BASE_URL: import.meta.env.VITE_REST_URL,
   // WebSocket URL (API Gateway WebSocket URL)
-  WS_URL: import.meta.env.VITE_WS_URL,
+  WS_URL: import.meta.env.VITE_WS_URL + "$default",
   // Default room
   DEFAULT_ROOM_ID: "general",
   // History page size

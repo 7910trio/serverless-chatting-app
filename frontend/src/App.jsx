@@ -71,7 +71,7 @@ export default function App() {
   );
   
   const [nickname, setNickname] = useLocalStorage("nickname", "guest" + Math.floor(Math.random() * 1000));
-  const [messages, setMessages] = useState([]); // 채팅 메시지 목록
+  const [messages, setMessages] = useState<any[]>([]); // 채팅 메시지 목록
   const [connecting, setConnecting] = useState(false); // WebSocket 연결 상태
   const [connected, setConnected] = useState(false); // WebSocket 연결 상태
   const [text, setText] = useState(""); // 입력 메시지
@@ -127,67 +127,81 @@ export default function App() {
       if (cancelled) return; // cleanup 이후라면 중단
 
       try {
-              ws = new WebSocket(url);
-      wsRef.current = ws;
+        ws = new WebSocket(url);
+        wsRef.current = ws;
 
-      ws.onopen = () => {
-        setConnecting(false);
-        setConnected(true);
-        reconnectRef.current.attempts = 0;
-        // Join current room (server Lambda can treat this as a subscribe action)
-        ws.send(JSON.stringify({ action: "join", roomId, nickname }));
-      };
+        ws.onopen = () => {
+          setConnecting(false);
+          setConnected(true);
+          reconnectRef.current.attempts = 0;
+          // Join current room (server Lambda can treat this as a subscribe action)
+          ws.send(JSON.stringify({ action: "join", roomId, nickname }));
+        };
 
-      ws.onmessage = (ev) => {
-        try {
-          const msg = JSON.parse(ev.data);
-          if (msg.type === "message" || msg.type === "system") {
-            setMessages((prev) => [...prev, msg]);
+        ws.onmessage = (ev) => {
+          try {
+            const data = JSON.parse(ev.data);
+            console.log("받은 메시지:", data);
+
+            let newMessages = [];
+
+            if (Array.isArray(data)) {
+              newMessages = data;
+            } else if (data.items && Array.isArray(data.items)) {
+              newMessages = data.items;
+            } else if (data.message) {
+              // 단일 메시지만 온 경우
+              newMessages = [data.message];
+            } else {
+              console.warn("⚠️ 알 수 없는 데이터 형식:", data);
+            }
+
+            // 기존 메시지 + 새 메시지
+            setMessages((prev) => [...prev, ...newMessages]);
+          } catch (e) {
+            console.warn("Non-JSON frame", ev.data);
           }
-        } catch (e) {
-          console.warn("Non-JSON frame", ev.data);
-        }
-      };
+        };
 
-      ws.onclose = () => {
-        setConnected(false);
-        scheduleReconnect();
-      };
+        ws.onclose = () => {
+          setConnected(false);
+          scheduleReconnect();
+        };
 
-      ws.onerror = () => {
-        setConnected(false);
-        ws.close();
-      };
-    } catch (err) {
-      console.error("Failed to open websocket:", err);
-      if (!cancelled) scheduleReconnect();
-    }
-  };
-
-    const scheduleReconnect = () => {
-      if (cancelled) return;
-      if (reconnectRef.current.timer) return;
-      const attempt = ++reconnectRef.current.attempts;
-      const delay = Math.min(30000, 1000 * Math.pow(2, attempt)); // exp backoff up to 30s
-      reconnectRef.current.timer = setTimeout(() => {
-        reconnectRef.current.timer = null;
-        open();
-      }, delay);
+        ws.onerror = () => {
+          setConnected(false);
+          ws.close();
+        };
+      } catch (err) {
+        console.error("Failed to open websocket:", err);
+        if (!cancelled) scheduleReconnect();
+      }
     };
 
-    open();
+      const scheduleReconnect = () => {
+        if (cancelled) return;
+        if (reconnectRef.current.timer) return;
+        const attempt = ++reconnectRef.current.attempts;
+        const delay = Math.min(30000, 1000 * Math.pow(2, attempt)); // exp backoff up to 30s
+        reconnectRef.current.timer = setTimeout(() => {
+          reconnectRef.current.timer = null;
+          open();
+        }, delay);
+      };
 
-    return () => {
-      cancelled = true;
-      if (reconnectRef.current.timer) {
-        clearTimeout(reconnectRef.current.timer);
-        reconnectRef.current.timer = null;
-      }
-      try {
-        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-          // 시도: 서버에 leave 알림 (있으면 처리)
-          wsRef.current.send(JSON.stringify({ action: "leave", roomId }));
+      open();
+
+      return () => {
+        cancelled = true;
+        if (reconnectRef.current.timer) {
+          clearTimeout(reconnectRef.current.timer);
+          reconnectRef.current.timer = null;
         }
+        try {
+          if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+            // 시도: 서버에 leave 알림 (있으면 처리)
+            wsRef.current.send(JSON.stringify({ action: "leave", roomId }));
+          }
       } catch (e) {
         // 무시: 이미 닫혔거나 전송 불가
       }

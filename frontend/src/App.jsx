@@ -155,7 +155,11 @@ export default function App() {
               newMessages = [data.message];
             } else {
               console.warn("⚠️ 알 수 없는 데이터 형식:", data);
+              new Messages = [];
             }
+
+            // 여기서 무조건 배열로 강제
+            if (!Array.isArray(newMessages)) newMessages = [];
 
             // 기존 메시지 + 새 메시지
             setMessages((prev) => [...prev, ...newMessages]);
@@ -296,7 +300,7 @@ export default function App() {
                 {messages.length === 0 && (
                   <div className="text-center text-sm text-slate-500 mt-10">No messages yet. Say hi 👋</div>
                 )}
-                {messages.map((m, idx) => (
+                {Array.isArray(messages) && messages.map((m, idx) => (
                   <motion.div
                     key={idx}
                     initial={{ opacity: 0, y: 4 }}

@@ -140,6 +140,7 @@ export default function App() {
 
         ws.onmessage = (ev) => {
           try {
+            console.log("받은 메시지 raw:", ev.data); // 서버에서 온 원본
             const data = JSON.parse(ev.data);
             console.log("받은 메시지:", data);
 

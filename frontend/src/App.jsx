@@ -71,7 +71,7 @@ export default function App() {
   );
   
   const [nickname, setNickname] = useLocalStorage("nickname", "guest" + Math.floor(Math.random() * 1000));
-  const [messages, setMessages] = useState<any[]>([]); // 채팅 메시지 목록
+  const [messages, setMessages] = useState([]); // 채팅 메시지 목록
   const [connecting, setConnecting] = useState(false); // WebSocket 연결 상태
   const [connected, setConnected] = useState(false); // WebSocket 연결 상태
   const [text, setText] = useState(""); // 입력 메시지

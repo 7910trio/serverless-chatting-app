@@ -7,7 +7,8 @@ const TABLE_MESSAGES = process.env.TABLE_MESSAGES || "ChatMessages";
 const TABLE_CONNECTIONS = process.env.TABLE_CONNECTIONS || "Connections";
 // WebSocket API Gateway 엔드포인트
 const apigw = new AWS.ApiGatewayManagementApi({
-  endpoint: process.env.WS_ENDPOINT, // "your-ws-api-id.execute-api.ap-northeast-2.amazonaws.com/prod"
+  apiVersion: "2018-11-29",
+  endpoint: events.requestContext.domainName + "/" + events.requestContext.stage,
 });
 
 module.exports.handler = async function(event) {

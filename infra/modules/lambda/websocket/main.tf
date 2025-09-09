@@ -57,16 +57,10 @@ resource "aws_iam_policy" "ws_lambda_dynamo_policy" {
         Action   = [
           "dynamodb:PutItem",
           "dynamodb:Query",
-          "dynamodb:DeleteItem"
-        ]
-        Resource = "arn:aws:dynamodb:*:*:table/Connections"
-      },
-      {
-        Effect   = "Allow"
-        Action   = [
+          "dynamodb:DeleteItem",
           "dynamodb:Scan"
         ]
-        Resource = "arn:aws:dynamodb:*:*:table/Connections/index/ByTTL"
+        Resource = "arn:aws:dynamodb:*:*:table/Connections"
       }
     ]
   })

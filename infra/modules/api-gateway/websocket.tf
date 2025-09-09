@@ -37,13 +37,12 @@ resource "aws_lambda_permission" "ws_api" {
   source_arn    = "${aws_apigatewayv2_api.websocket_api.execution_arn}/${aws_apigatewayv2_stage.ws_default_stage.name}/*"
 }
 
-resource "aws_apigatewayv2_deployment" "ws" {
-  api_id = aws_apigatewayv2_api.websocket_api.id
-}
-
 resource "aws_apigatewayv2_stage" "ws_default_stage" {
   api_id      = aws_apigatewayv2_api.websocket_api.id
   name        = "dev"
-  deployment_id = aws_apigatewayv2_deployment.ws.id
   auto_deploy = true
+
+  default_route_settings {
+    detailed_metrics_enabled = true
+  }
 }

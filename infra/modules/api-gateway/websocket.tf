@@ -42,7 +42,7 @@ resource "aws_apigatewayv2_stage" "ws_default_stage" {
   name        = "dev"
   auto_deploy = true
 
-  default_route_settings {
-    detailed_metrics_enabled = true
-  }
+  # default_route_settings {
+  #   detailed_metrics_enabled = true
+  # }
 }

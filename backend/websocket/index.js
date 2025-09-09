@@ -8,7 +8,7 @@ const TABLE_CONNECTIONS = process.env.TABLE_CONNECTIONS || "Connections";
 // WebSocket API Gateway 엔드포인트
 const apigw = new AWS.ApiGatewayManagementApi({
   apiVersion: "2018-11-29",
-  endpoint: events.requestContext.domainName + "/" + events.requestContext.stage,
+  endpoint: event.requestContext.domainName + "/" + event.requestContext.stage,
 });
 
 module.exports.handler = async function(event) {

@@ -1,16 +1,18 @@
 const AWS = require("aws-sdk");
+
 const dynamo = new AWS.DynamoDB.DocumentClient();
+// 채팅 메시지 저장 테이블
+const TABLE_MESSAGES = process.env.TABLE_MESSAGES || "ChatMessages";
+// WebSocket 연결 정보 테이블
+const TABLE_CONNECTIONS = process.env.TABLE_CONNECTIONS || "Connections";
+
 
 module.exports.handler = async function(event) {
 
-  // 채팅 메시지 저장 테이블
-  const TABLE_MESSAGES = process.env.TABLE_MESSAGES || "ChatMessages";
-  // WebSocket 연결 정보 테이블
-  const TABLE_CONNECTIONS = process.env.TABLE_CONNECTIONS || "Connections";
   // WebSocket API Gateway 엔드포인트
   const apigw = new AWS.ApiGatewayManagementApi({
     apiVersion: "2018-11-29",
-    endpoint: event.requestContext.domainName + "/" + event.requestContext.stage,
+    endpoint: `https://${event.requestContext.domainName}/${event.requestContext.stage}`,
   });
 
   const { requestContext, body } = event;

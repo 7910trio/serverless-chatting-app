@@ -1,8 +1,8 @@
 const AWS = require("aws-sdk");
+const dynamo = new AWS.DynamoDB.DocumentClient();
 
 module.exports.handler = async function(event) {
 
-  const dynamo = new AWS.DynamoDB.DocumentClient();
   // 채팅 메시지 저장 테이블
   const TABLE_MESSAGES = process.env.TABLE_MESSAGES || "ChatMessages";
   // WebSocket 연결 정보 테이블

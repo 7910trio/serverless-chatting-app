@@ -127,6 +127,7 @@ resource "aws_iam_policy" "github_actions_policy" {
         Action = [
           "iam:CreateRole",
           "iam:CreatePolicy",
+          "iam:CreatePolicyVersion",
           "iam:AttachRolePolicy",
           "iam:PassRole",
           "iam:Get*",

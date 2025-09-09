@@ -60,7 +60,7 @@ resource "aws_iam_policy" "ws_lambda_dynamo_policy" {
           "dynamodb:DeleteItem",
           "dynamodb:Scan"
         ]
-        Resource = "arn:aws:dynamodb:*:*:table/Connections"
+        Resource = "arn:aws:dynamodb:*:*:table/ChatConnections"
       }
     ]
   })

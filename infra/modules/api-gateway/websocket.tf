@@ -39,6 +39,6 @@ resource "aws_lambda_permission" "ws_api" {
 
 resource "aws_apigatewayv2_stage" "ws_default_stage" {
   api_id      = aws_apigatewayv2_api.websocket_api.id
-  name        = "$default"
+  name        = "dev"
   auto_deploy = true
 }
